@@ -18,7 +18,8 @@ if (row === undefined) {
     console.log('Your database appears to be empty. I will initialize it now.');
 // Set a const that will contain your SQL commands to initialize the database.
     const sqlInit = `
-    CREATE TABLE accesslog ( id INTEGER PRIMARY KEY, 
+    CREATE TABLE accesslog ( 
+        id INTEGER PRIMARY KEY, 
         remoteaddr TEXT, 
         remoteuser TEXT, 
         time TEXT, 
@@ -39,6 +40,8 @@ if (row === undefined) {
     console.log('Database exists.')
 }
 // Export all of the above as a module so that we can use it elsewhere.
+module.exports = db
+
 const args = require('minimist')(process.argv.slice(2));
 
 const help = (`server.js [options] --port	Set the port number for the server to listen on. Must be an integer
@@ -59,4 +62,3 @@ if (args.help || args.h) {
     console.log(help)
     process.exit(0)
 }
-module.exports = db
