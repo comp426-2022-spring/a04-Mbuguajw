@@ -7,14 +7,12 @@
 //Require more stuff if necessary
 
 
-const http = require('http');
-const app = express();
-const Database = require('better-sqlite3');
+var express = require("express")
+var app = express();
 //const { debug } = require('console');
 // Connect to a database or create one if it doesn't exist yet.
 const db = require("./database.js");
 const fs = require('fs');
-const md5 = require('md5');
 const morgan = require('morgan');
 // Is the database initialized or do we need to initialize it?
 const stmt = db.prepare(`
