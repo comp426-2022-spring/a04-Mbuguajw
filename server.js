@@ -7,13 +7,15 @@
 //Require more stuff if necessary
 
 
-
+const http = require('http');
+const app = express();
 const Database = require('better-sqlite3');
 //const { debug } = require('console');
 // Connect to a database or create one if it doesn't exist yet.
 const db = require("./database.js");
 const fs = require('fs');
 const md5 = require('md5');
+const morgan = require('morgan');
 // Is the database initialized or do we need to initialize it?
 const stmt = db.prepare(`
     SELECT name FROM sqlite_master WHERE type='table' and name='userinfo';`
@@ -40,7 +42,7 @@ let row = stmt.get();
 // // Export all of the above as a module so that we can use it elsewhere.
 module.exports = db
 const args = require('minimist')(process.argv.slice(2));
-console.log(args)
+
 const help = (`server.js [options] --port	Set the port number for the server to listen on. Must be an integer
 between 1 and 65535.
 
