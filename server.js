@@ -6,12 +6,13 @@ var app = express()
 
 const fs = require('fs');
 const morgan = require('morgan');
-var HTTP_PORT = args.port || process.env.port || 5555;
 
 app.use(express.urlencoded({ extended: true}));
 app.use(express.json());
 
 const args = require('minimist')(process.argv.slice(2));
+
+var HTTP_PORT = args.port || process.env.port || 5555;
 
 const help = (`server.js [options] --port	Set the port number for the server to listen on. Must be an integer
 between 1 and 65535.
