@@ -1,7 +1,15 @@
 // This ensures that things do not fail silently but will throw errors instead.
 "use strict";
 // Require better-sqlite.
+
+
+
+//Require more stuff if necessary
+
+
+
 const Database = require('better-sqlite3');
+const { debug } = require('console');
 // Connect to a database or create one if it doesn't exist yet.
 const db = new Database('user.db');
 // Is the database initialized or do we need to initialize it?
@@ -50,12 +58,34 @@ if (args.help || args.h) {
     process.exit(0)
 }
 
+// Server port
+var HTTP_PORT = 5000 
+// Start server
+const server = app.listen(HTTP_PORT, () => {
+    console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
+});
 // Use morgan for logging to files
 // Create a write stream to append (flags: 'a') to a file
-const WRITESTREAM = fs.createWriteStream('FILE', { flags: 'a' })
-// Set up the access logging middleware
-app.use(morgan('FORMAT', { stream: WRITESTREAM }))
+if ((args.log || 'true') == 'true') {
+    const WRITESTREAM = fs.createWriteStream('FILE', { flags: 'a' })
+    // Set up the access logging middleware
+    app.use(morgan('FORMAT', { stream: WRITESTREAM }))
+}
 
+if (args.debug || 'false') {
+    app.get('/app/log/access', (req, res) => {
+        try {
+            // userinfo or accesslog?
+            const stmt = db.prepare('SELECT * FROM userinfo').all()
+            res.status(200).json(stmt)
+        } catch(e) {
+            console.error(e)
+        }
+    });
+    app.get('/app/error', (req, res) => {
+        throw new Error('Error test successful') // Express will catch this on its own.
+    });
+}
 
 app.use( (req, res, next) => {
     // Your middleware goes here.
@@ -71,16 +101,8 @@ app.use( (req, res, next) => {
         referer: req.headers['referer'],
         useragent: req.headers['user-agent']
     }
+    next();
 })
-
-
-app.get('/app/log/access', (req, res) => {
-    res.json(db)
-});
-
-app.get('/app/error', (req, res) => {
-    throw new Error('Error test successful') // Express will catch this on its own.
-});
 
 
 // Previous API Construction from last assignment
