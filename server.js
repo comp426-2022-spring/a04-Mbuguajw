@@ -74,21 +74,6 @@ if ((args.log || 'true') == 'true') {
     app.use(morgan('FORMAT', { stream: WRITESTREAM }))
 }
 
-if (args.debug || 'false') {
-    app.get('/app/log/access', (req, res) => {
-        try {
-            // userinfo or accesslog?
-            const stmt = db.prepare('SELECT * FROM userinfo').all()
-            res.status(200).json(stmt)
-        } catch(e) {
-            console.error(e)
-        }
-    });
-    app.get('/app/error', (req, res) => {
-        throw new Error('Error test successful') // Express will catch this on its own.
-    });
-}
-
 app.use( (req, res, next) => {
     // Your middleware goes here.
     let logdata = {
@@ -103,9 +88,26 @@ app.use( (req, res, next) => {
         referer: req.headers['referer'],
         useragent: req.headers['user-agent']
     }
+    //const stmt = db.prepare(`INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url,  protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    //const info = stmt.run(logdata.remoteaddr.toString(), logdata.remoteuser, logdata.time, logdata.method.toString(), logdata.url.toString(), logdata.protocol.toString(), logdata.httpversion.toString(), logdata.secure.toString(), logdata.status.toString(), logdata.referer, logdata.useragent.toString())
+  
     next();
 })
 
+if (args.debug || 'false') {
+    app.get('/app/log/access', (req, res) => {
+        try {
+            // userinfo or accesslog?
+            const stmt = db.prepare('SELECT * FROM userinfo').all()
+            res.status(200).json(stmt)
+        } catch(e) {
+            console.error(e)
+        }
+    });
+    app.get('/app/error', (req, res) => {
+        throw new Error('Error test successful') // Express will catch this on its own.
+    });
+}
 
 // Previous API Construction from last assignment
 
