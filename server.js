@@ -8,7 +8,7 @@
 
 
 var express = require("express")
-var app = express();
+var app = express()
 //const { debug } = require('console');
 // Connect to a database or create one if it doesn't exist yet.
 const db = require("./database.js");
@@ -61,7 +61,7 @@ if (args.help || args.h) {
 }
 
 // Server port
-var HTTP_PORT = 5000 
+var HTTP_PORT = args.port || process.env.port || 5555;
 // Start server
 const server = app.listen(HTTP_PORT, () => {
     console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
