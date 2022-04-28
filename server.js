@@ -7,6 +7,10 @@ var app = express()
 const fs = require('fs');
 const morgan = require('morgan');
 var HTTP_PORT = args.port || process.env.port || 5555;
+
+app.use(express.urlencoded({ extended: true}));
+app.use(express.json());
+
 // Start server
 const server = app.listen(HTTP_PORT, () => {
     console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
@@ -16,7 +20,7 @@ const server = app.listen(HTTP_PORT, () => {
 if ((args.log || 'true') == 'true') {
     const WRITESTREAM = fs.createWriteStream('FILE', { flags: 'a' })
     // Set up the access logging middleware
-    app.use(morgan('FORMAT', { stream: WRITESTREAM }))
+    app.use(morgan('combined', { stream: WRITESTREAM }))
 }
 
 app.use( (req, res, next) => {
@@ -34,8 +38,7 @@ app.use( (req, res, next) => {
         useragent: req.headers['user-agent']
     }
     const stmt = db.prepare(`INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url,  protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    const info = stmt.run(logdata.remoteaddr.toString(), logdata.remoteuser, logdata.time, logdata.method.toString(), logdata.url.toString(), logdata.protocol.toString(), logdata.httpversion.toString(), logdata.secure.toString(), logdata.status.toString(), logdata.referer, logdata.useragent.toString())
-  
+    stmt.run(logdata.remoteaddr.toString(), logdata.remoteuser, logdata.time, logdata.method.toString(), logdata.url.toString(), logdata.protocol.toString(), logdata.httpversion.toString(), logdata.secure.toString(), logdata.status.toString(), logdata.referer, logdata.useragent.toString())
     next();
 })
 
