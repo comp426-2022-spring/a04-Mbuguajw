@@ -1,4 +1,3 @@
-
 //const { debug } = require('console');
 // Connect to a database or create one if it doesn't exist yet.
 // const db = require("./database.js");
