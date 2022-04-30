@@ -6,9 +6,7 @@ const http = require('http');
 const md5 = require('md5');
 const fs = require('fs');
 const morgan = require('morgan');
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
+const db = require("./database.js");
 const args = require('minimist')(process.argv.slice(2));
 
 args['port'];
@@ -18,18 +16,21 @@ args['log'];
 
 var HTTP_PORT = args.port || process.env.port || 5555;
 
-const help = (`server.js [options] --port	Set the port number for the server to listen on. Must be an integer
-between 1 and 65535.
+const help = (
+`server.js [options]
 
---debug	If set to true, creates endlpoints /app/log/access/ which returns
-a JSON access log from the database and /app/error which throws 
-an error with the message "Error test successful." Defaults to 
-false.
+    --port		Set the port number for the server to listen on. Must be an integer
+              between 1 and 65535.
 
---log		If set to false, no log files are written. Defaults to true.
-Logs are always written to database.
+    --debug	  If set to true, creates endpoints /app/log/access/ which returns
+              a JSON access log from the database and /app/error which throws 
+              an error with the message "Error test successful." Defaults to 
+            false.
 
---help	Return this message and exit.
+    --log		  If set to false, no log files are written. Defaults to true.
+              Logs are always written to database.
+
+    --help	  Return this message and exit.
 `)
 
 if (args.help || args.h) {
