@@ -1,4 +1,3 @@
-// This ensures that things do not fail silently but will throw errors instead.
 // Server port
 var express = require("express");
 var app = express();
@@ -20,20 +19,18 @@ args['log'];
 var HTTP_PORT = args.port || process.env.port || 5555;
 
 const help = (`
-server.js [options]
+server.js [options] --port	Set the port number for the server to listen on. Must be an integer
+between 1 and 65535.
 
-  --port		Set the port number for the server to listen on. Must be an integer
-            between 1 and 65535.
+--debug	If set to true, creates endlpoints /app/log/access/ which returns
+a JSON access log from the database and /app/error which throws 
+an error with the message "Error test successful." Defaults to 
+false.
 
-  --debug	  If set to true, creates endpoints /app/log/access/ which returns
-            a JSON access log from the database and /app/error which throws 
-            an error with the message "Error test successful." Defaults to 
-            false.
+--log		If set to false, no log files are written. Defaults to true.
+Logs are always written to database.
 
-  --log		  If set to false, no log files are written. Defaults to true.
-            Logs are always written to database.
-
-  --help	  Return this message and exit.
+--help	Return this message and exit.
 `)
 
 if (args.help || args.h) {
@@ -83,7 +80,6 @@ if (args.debug || 'false') {
       }
   });
   app.get('/app/error', (req, res) => {
-    res.status(500);  
     throw new Error('Error test successful') // Express will catch this on its own.
   });
 }
