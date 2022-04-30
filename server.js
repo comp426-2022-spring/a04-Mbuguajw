@@ -22,18 +22,18 @@ var HTTP_PORT = args.port || process.env.port || 5555;
 const help = (`
 server.js [options]
 
-    --port		Set the port number for the server to listen on. Must be an integer
-              between 1 and 65535.
+  --port		Set the port number for the server to listen on. Must be an integer
+            between 1 and 65535.
 
-    --debug	  If set to true, creates endpoints /app/log/access/ which returns
-              a JSON access log from the database and /app/error which throws 
-              an error with the message "Error test successful." Defaults to 
-              false.
+  --debug	  If set to true, creates endpoints /app/log/access/ which returns
+            a JSON access log from the database and /app/error which throws 
+            an error with the message "Error test successful." Defaults to 
+            false.
 
-    --log		  If set to false, no log files are written. Defaults to true.
-              Logs are always written to database.
+  --log		  If set to false, no log files are written. Defaults to true.
+            Logs are always written to database.
 
-    --help	  Return this message and exit.
+  --help	  Return this message and exit.
 `)
 
 if (args.help || args.h) {
@@ -73,57 +73,57 @@ app.use( (req, res, next) => {
 })
 
 if (args.debug || 'false') {
-    app.get('/app/log/access', (req, res) => {
-        try {
-            // userinfo or accesslog?
-            const stmt = db.prepare('SELECT * FROM userinfo').all()
-            res.status(200).json(stmt)
-        } catch(e) {
-            console.error(e)
-        }
-    });
-    app.get('/app/error', (req, res) => {
-      res.status(500);  
-      throw new Error('Error test successful') // Express will catch this on its own.
-    });
+  app.get('/app/log/access', (req, res) => {
+      try {
+          // userinfo or accesslog?
+          const stmt = db.prepare('SELECT * FROM userinfo').all()
+          res.status(200).json(stmt)
+      } catch(e) {
+          console.error(e)
+      }
+  });
+  app.get('/app/error', (req, res) => {
+    res.status(500);  
+    throw new Error('Error test successful') // Express will catch this on its own.
+  });
 }
 
 // Previous API Construction from last assignment
 
 app.get('/app/', (req, res) => {
-    // Respond with status 200
-    res.statusCode = 200;
-    // Respond with status message "OK"
-    res.statusMessage = 'OK';
-    //res.send('Hello World')
-    res.writeHead( res.statusCode, { 'Content-Type' : 'text/plain' });
-    res.end(res.statusCode+ ' ' +res.statusMessage);
+  // Respond with status 200
+  res.statusCode = 200;
+  // Respond with status message "OK"
+  res.statusMessage = 'OK';
+  //res.send('Hello World')
+  res.writeHead( res.statusCode, { 'Content-Type' : 'text/plain' });
+  res.end(res.statusCode+ ' ' +res.statusMessage);
 })
 
 app.get('/app/flip/', (req, res) => {
-    var flip = coinFlip();
-    res.json({ "flip" : flip})
+  var flip = coinFlip();
+  res.json({ "flip" : flip})
 });
 
 app.get('/app/flips/:number', (req, res) => {
-    var flips = coinFlips(req.params.number);
-    var stats = countFlips(flips);
-    res.json({"raw" : flips, "summary" : stats});
+  var flips = coinFlips(req.params.number);
+  var stats = countFlips(flips);
+  res.json({"raw" : flips, "summary" : stats});
 });
 
 app.get('/app/flip/call/heads', (req, res) => {
-    const head = flipACoin('heads');
-    res.json(head);
+  const head = flipACoin('heads');
+  res.json(head);
 });
 
 app.get('/app/flip/call/tails', (req, res) => {
-    const tail = flipACoin('tails');
-    res.json(tail);
+  const tail = flipACoin('tails');
+  res.json(tail);
 });
 
 app.use(function(req, res){
-    res.status(404).send('404 NOT FOUND ENDPOINT');
-    res.type("text/plain")
+  res.status(404).send('404 NOT FOUND ENDPOINT');
+  res.type("text/plain")
 });
 
 function coinFlip() {
