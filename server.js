@@ -2,8 +2,7 @@
 // Server port
 var express = require("express");
 var app = express();
-const http = require('http');
-const md5 = require('md5');
+
 const fs = require('fs');
 const morgan = require('morgan');
 const db = require("./database.js");
@@ -12,7 +11,6 @@ const args = require('minimist')(process.argv.slice(2));
 console.log(args);
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
-
 
 args['port'];
 args['help'];
@@ -85,7 +83,7 @@ if (args.debug || 'false') {
         }
     });
     app.get('/app/error', (req, res) => {
-      res.status(400);  
+      res.status(500);  
       throw new Error('Error test successful') // Express will catch this on its own.
     });
 }
