@@ -34,50 +34,51 @@ Logs are always written to database.
 `)
 
 if (args.help || args.h) {
-    console.log(help)
-    process.exit(0)
+  console.log(help)
+  process.exit(0)
 }
 
 // Start server
 const server = app.listen(HTTP_PORT, () => {
-    console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
+  console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
 });
 // Use morgan for logging to files
 // Create a write stream to append (flags: 'a') to a file
-if ((args.log || 'true') == 'true') {
-    const WRITESTREAM = fs.createWriteStream('FILE', { flags: 'a' })
-    // Set up the access logging middleware
-    app.use(morgan('combined', { stream: WRITESTREAM }))
+if (args.log == true && args.log == 'true') {
+  const WRITESTREAM = fs.createWriteStream('FILE', { flags: 'a' })
+  // Set up the access logging middleware
+  app.use(morgan('combined', { stream: WRITESTREAM }))
 }
 
 app.use( (req, res, next) => {
-    // Your middleware goes here.
-    let logdata = {
-        remoteaddr: req.ip,
-        remoteuser: req.user,
-        time: Date.now(),
-        method: req.method,
-        url: req.url,
-        protocol: req.protocol,
-        httpversion: req.httpVersion,
-        status: res.statusCode,
-        referer: req.headers['referer'],
-        useragent: req.headers['user-agent']
-    }
-    const stmt = db.prepare(`INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url,  protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    stmt.run(logdata.remoteaddr.toString(), logdata.remoteuser, logdata.time, logdata.method.toString(), logdata.url.toString(), logdata.protocol.toString(), logdata.httpversion.toString(), logdata.secure.toString(), logdata.status.toString(), logdata.referer, logdata.useragent.toString())
-    next();
+  // Your middleware goes here.
+  let logdata = {
+    remoteaddr: req.ip,
+    remoteuser: req.user,
+    time: Date.now(),
+    method: req.method,
+    url: req.url,
+    protocol: req.protocol,
+    httpversion: req.httpVersion,
+    status: res.statusCode,
+    referer: req.headers['referer'],
+    useragent: req.headers['user-agent']
+  }
+  const stmt = db.prepare(`INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url,  protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+  stmt.run(logdata.remoteaddr.toString(), logdata.remoteuser, logdata.time, logdata.method.toString(), logdata.url.toString(), logdata.protocol.toString(), logdata.httpversion.toString(), logdata.secure.toString(), logdata.status.toString(), logdata.referer, logdata.useragent.toString())
+  next();
 })
 
-if (args.debug || 'false') {
+if (args.debug == true) {
   app.get('/app/log/access', (req, res) => {
-      try {
-          // userinfo or accesslog?
-          const stmt = db.prepare('SELECT * FROM userinfo').all()
-          res.status(200).json(stmt)
-      } catch(e) {
-          console.error(e)
-      }
+    try {
+      // userinfo or accesslog?
+      const stmt = db.prepare('SELECT * FROM userinfo').all()
+      res.status(200).json(stmt)
+    } 
+    catch(e) {
+      console.error(e)
+    }
   });
   app.get('/app/error', (req, res) => {
     throw new Error('Error test successful') // Express will catch this on its own.
