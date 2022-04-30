@@ -1,16 +1,20 @@
 // This ensures that things do not fail silently but will throw errors instead.
-"use strict";
 // Server port
 var express = require("express")
 var app = express()
 
 const fs = require('fs');
 const morgan = require('morgan');
-
-app.use(express.urlencoded({ extended: true}));
+const md5 = require('md5');
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 const args = require('minimist')(process.argv.slice(2));
+
+args['port'];
+args['help'];
+args['debug'];
+args['log'];
 
 var HTTP_PORT = args.port || process.env.port || 5555;
 

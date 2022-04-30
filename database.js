@@ -1,6 +1,7 @@
 //const { debug } = require('console');
 // Connect to a database or create one if it doesn't exist yet.
 // const db = require("./database.js");
+"use strict";
 const Database = require('better-sqlite3');
 const db = new Database('log.db');
 
@@ -40,24 +41,3 @@ if (row === undefined) {
 }
 // Export all of the above as a module so that we can use it elsewhere.
 module.exports = db
-
-const args = require('minimist')(process.argv.slice(2));
-
-const help = (`server.js [options] --port	Set the port number for the server to listen on. Must be an integer
-between 1 and 65535.
-
---debug	If set to true, creates endlpoints /app/log/access/ which returns
-a JSON access log from the database and /app/error which throws 
-an error with the message "Error test successful." Defaults to 
-false.
-
---log		If set to false, no log files are written. Defaults to true.
-Logs are always written to database.
-
---help	Return this message and exit.
-`)
-
-if (args.help || args.h) {
-    console.log(help)
-    process.exit(0)
-}
