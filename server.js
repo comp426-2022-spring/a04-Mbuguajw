@@ -21,8 +21,8 @@ args['log'];
 
 var HTTP_PORT = args.port || process.env.port || 5555;
 
-const help = (
-`server.js [options]
+const help = (`
+server.js [options]
 
     --port		Set the port number for the server to listen on. Must be an integer
               between 1 and 65535.
@@ -30,7 +30,7 @@ const help = (
     --debug	  If set to true, creates endpoints /app/log/access/ which returns
               a JSON access log from the database and /app/error which throws 
               an error with the message "Error test successful." Defaults to 
-            false.
+              false.
 
     --log		  If set to false, no log files are written. Defaults to true.
               Logs are always written to database.
