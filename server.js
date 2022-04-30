@@ -1,11 +1,11 @@
 // This ensures that things do not fail silently but will throw errors instead.
 // Server port
-var express = require("express")
-var app = express()
-
+var express = require("express");
+var app = express();
+const http = require('http');
+const md5 = require('md5');
 const fs = require('fs');
 const morgan = require('morgan');
-const md5 = require('md5');
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -79,7 +79,8 @@ if (args.debug || 'false') {
         }
     });
     app.get('/app/error', (req, res) => {
-        throw new Error('Error test successful') // Express will catch this on its own.
+      res.status(400);  
+      throw new Error('Error test successful') // Express will catch this on its own.
     });
 }
 
