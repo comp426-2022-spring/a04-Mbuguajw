@@ -8,8 +8,8 @@ const db = require("./database.js");
 const args = require('minimist')(process.argv.slice(2));
 
 console.log(args);
-app.use(express.json())
-app.use(express.urlencoded({extended: true}))
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
 
 var HTTP_PORT = args.port || process.env.port || 5555;
 
@@ -41,7 +41,14 @@ const server = app.listen(HTTP_PORT, () => {
 });
 // Use morgan for logging to files
 // Create a write stream to append (flags: 'a') to a file
-if (args.log == true && args.log == 'true') {
+args['log']
+args['debug']
+args['port']
+
+const log = args.log || 'true';
+const debug = args.debug || 'false';
+
+if (log == true) {
   const WRITESTREAM = fs.createWriteStream('FILE', { flags: 'a' })
   // Set up the access logging middleware
   app.use(morgan('combined', { stream: WRITESTREAM }))
@@ -62,17 +69,18 @@ app.use( (req, res, next) => {
     useragent: req.headers['user-agent']
   }
   const stmt = db.prepare(`INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url,  protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-  stmt.run(logdata.remoteaddr.toString(), logdata.remoteuser, logdata.time, logdata.method.toString(), logdata.url.toString(), logdata.protocol.toString(), logdata.httpversion.toString(), logdata.secure.toString(), logdata.status.toString(), logdata.referer, logdata.useragent.toString())
+  stmt.run(logdata.remoteaddr.toString(), logdata.remoteuser, logdata.time, logdata.method.toString(), logdata.url.toString(), logdata.protocol.toString(), logdata.httpversion.toString(), logdata.secure.toString(), logdata.status.toString(), logdata.referer, logdata.useragent.toString());
   next();
 })
 
-if (args.debug == true) {
+if (debug == true) {
   app.get('/app/log/access', (req, res) => {
     // userinfo or accesslog?
     const stmt = db.prepare('SELECT * FROM userinfo').all()
     res.status(200).json(stmt)
   });
   app.get('/app/error', (req, res) => {
+    res.status(500)
     throw new Error('Error test successful') // Express will catch this on its own.
   });
 }
@@ -85,8 +93,8 @@ app.get('/app/', (req, res) => {
   // Respond with status message "OK"
   res.statusMessage = 'OK';
   //res.send('Hello World')
-  res.writeHead( res.statusCode, { 'Content-Type' : 'text/plain' });
-  res.end(res.statusCode+ ' ' +res.statusMessage);
+  // res.writeHead( res.statusCode, { 'Content-Type' : 'text/plain' });
+  // res.end(res.statusCode+ ' ' +res.statusMessage);
 })
 
 app.get('/app/flip/', (req, res) => {
@@ -111,7 +119,7 @@ app.get('/app/flip/call/tails', (req, res) => {
 });
 
 app.use(function(req, res){
-  res.status(404).send('404 NOT FOUND ENDPOINT');
+  res.status(404).send('404 NOT FOUND');
   res.type("text/plain")
 });
 
