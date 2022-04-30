@@ -9,6 +9,11 @@ const morgan = require('morgan');
 const db = require("./database.js");
 const args = require('minimist')(process.argv.slice(2));
 
+console.log(args);
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+
+
 args['port'];
 args['help'];
 args['debug'];
@@ -164,4 +169,3 @@ function flipACoin(call) {
     return {call: call, flip: results, result: "lose"};
   }
 }
-
