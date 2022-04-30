@@ -37,7 +37,7 @@ if (args.help || args.h) {
 
 // Start server
 const server = app.listen(HTTP_PORT, () => {
-  console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
+  console.log("App listening on port %PORT%".replace("%PORT%",HTTP_PORT))
 });
 // Use morgan for logging to files
 // Create a write stream to append (flags: 'a') to a file
@@ -66,16 +66,16 @@ app.use( (req, res, next) => {
   next();
 })
 
-// if (args.debug == true) {
-//   app.get('/app/log/access', (req, res) => {
-//     // userinfo or accesslog?
-//     const stmt = db.prepare('SELECT * FROM userinfo').all()
-//     res.status(200).json(stmt)
-//   });
-//   app.get('/app/error', (req, res) => {
-//     throw new Error('Error test successful') // Express will catch this on its own.
-//   });
-// }
+if (args.debug == true) {
+  app.get('/app/log/access', (req, res) => {
+    // userinfo or accesslog?
+    const stmt = db.prepare('SELECT * FROM userinfo').all()
+    res.status(200).json(stmt)
+  });
+  app.get('/app/error', (req, res) => {
+    throw new Error('Error test successful') // Express will catch this on its own.
+  });
+}
 
 // Previous API Construction from last assignment
 
