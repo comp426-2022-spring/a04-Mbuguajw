@@ -11,11 +11,6 @@ console.log(args);
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-args['port'];
-args['help'];
-args['debug'];
-args['log'];
-
 var HTTP_PORT = args.port || process.env.port || 5555;
 
 const help = (`
