@@ -66,16 +66,16 @@ app.use( (req, res, next) => {
   next();
 })
 
-if (args.debug == true) {
-  app.get('/app/log/access', (req, res) => {
-    // userinfo or accesslog?
-    const stmt = db.prepare('SELECT * FROM userinfo').all()
-    res.status(200).json(stmt)
-  });
-  app.get('/app/error', (req, res) => {
-    throw new Error('Error test successful') // Express will catch this on its own.
-  });
-}
+// if (args.debug == true) {
+//   app.get('/app/log/access', (req, res) => {
+//     // userinfo or accesslog?
+//     const stmt = db.prepare('SELECT * FROM userinfo').all()
+//     res.status(200).json(stmt)
+//   });
+//   app.get('/app/error', (req, res) => {
+//     throw new Error('Error test successful') // Express will catch this on its own.
+//   });
+// }
 
 // Previous API Construction from last assignment
 
