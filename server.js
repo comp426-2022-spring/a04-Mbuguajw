@@ -44,7 +44,6 @@ args['debug']
 args['port']
 
 const log = args.log || 'true';
-const debug = args.debug || 'false';
 
 if (log == true) {
   	const WRITESTREAM = fs.createWriteStream('FILE', { flags: 'a' })
@@ -73,7 +72,7 @@ app.use((req, res, next) => {
   	next();
 })
 
-if (debug == false) {
+if (args.debug) {
   	app.get('/app/log/access', (req, res) => {
     	// userinfo or accesslog?
     	const stmt = db.prepare('SELECT * FROM userinfo').all()
