@@ -9,7 +9,7 @@ const args = require('minimist')(process.argv.slice(2));
 
 console.log(args);
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended : true }));
 
 var HTTP_PORT = args.port || process.env.port || 5555;
 
@@ -34,7 +34,7 @@ if (args.help || args.h) {
 }
 
 // Start server
-const accesslog = app.listen(HTTP_PORT, () => {
+const server = app.listen(HTTP_PORT, () => {
   console.log("App listening on port %PORT%".replace("%PORT%",HTTP_PORT))
 });
 // Use morgan for logging to files
@@ -49,10 +49,12 @@ const debug = args.debug || 'false';
 if (log == true) {
   const WRITESTREAM = fs.createWriteStream('FILE', { flags: 'a' })
   // Set up the access logging middleware
-  app.use(morgan('combined', { stream: WRITESTREAM }))
+  app.use(morgan('FORMAT', { stream: WRITESTREAM }))
+}else {
+  console.log("ErrorErrorError");
 }
 
-app.use( (req, res, next) => {
+app.use((req, res, next) => {
   // Your middleware goes here.
   let logdata = {
     remoteaddr: req.ip,
@@ -67,7 +69,7 @@ app.use( (req, res, next) => {
     useragent: req.headers['user-agent']
   }
   const stmt = db.prepare(`INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url,  protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-  stmt.run(logdata.remoteaddr.toString(), logdata.remoteuser, logdata.time, logdata.method.toString(), logdata.url.toString(), logdata.protocol.toString(), logdata.httpversion.toString(), logdata.secure.toString(), logdata.status.toString(), logdata.referer, logdata.useragent.toString());
+  const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.secure, logdata.status, logdata.referer, logdata.useragent);
   next();
 })
 
