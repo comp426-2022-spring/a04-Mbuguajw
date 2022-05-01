@@ -28,7 +28,7 @@
       "output": "500 Internal Server Error",
       "comparison": "regex",
       "timeout": 10,
-      "points": 0
+      "points": 15000
     },
     {
       "name": "Access log file option &#45;&#45;log&#61;false &#40;do not create a log file&#41;",
@@ -38,7 +38,7 @@
       "output": "success",
       "comparison": "included",
       "timeout": 10,
-      "points": 0
+      "points": 15000
     },
     {
       "name": "Help text",
@@ -48,7 +48,7 @@
       "output": "(--help).*(Return this message and exit.)",
       "comparison": "regex",
       "timeout": 10,
-      "points": 0
+      "points": 15000
     },
     {
       "name": "Node version",
@@ -58,7 +58,7 @@
       "output": "",
       "comparison": "included",
       "timeout": 10,
-      "points": 45000
+      "points": null
     }
   ]
 }
