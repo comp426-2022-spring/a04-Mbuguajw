@@ -35,7 +35,7 @@ if (args.help || args.h) {
 
 // Start server
 const server = app.listen(HTTP_PORT, () => {
-  	console.log("App listening on port %PORT%".replace("%PORT%",HTTP_PORT))
+	console.log("App listening on port %PORT%".replace("%PORT%",HTTP_PORT))
 });
 // Use morgan for logging to files
 // Create a write stream to append (flags: 'a') to a file
