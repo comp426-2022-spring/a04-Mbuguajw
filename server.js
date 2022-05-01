@@ -1,8 +1,17 @@
-// Require minimist module (make sure you install this one via npm).
-// Require minimist module
-const args = require('minimist')(process.argv.slice(2))
-// See what is stored in the object produced by minimist
-//console.log('Command line arguments: ', args)
+// Server port
+var express = require("express");
+var app = express();
+
+const fs = require('fs');
+const morgan = require('morgan');
+const db = require("./database.js");
+const args = require('minimist')(process.argv.slice(2));
+
+console.log(args);
+app.use(express.json());
+app.use(express.urlencoded({ extended : true }));
+
+var port = args.port || args.p || 5000;
 // Store help text 
 const help = (`
 server.js [options]
@@ -16,77 +25,59 @@ server.js [options]
             Logs are always written to database.
 --help, -h	Return this message and exit.
 `)
-// If --help, echo help text and exit
 if (args.help || args.h) {
-    console.log(help)
-    process.exit(0)
+	console.log(help)
+	process.exit(0)
 }
-var express = require("express")
-var app = express()
-const fs = require('fs')
-const morgan = require('morgan')
-const db = require('./database.js')
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
-const port = args.port || args.p || 5000
-
+// Start server
 const server = app.listen(port, () => {
-    console.log("Server running on port %PORT%".replace("%PORT%",port))
+  console.log("App listening on port %PORT%".replace("%PORT%",port))
 });
+// Use morgan for logging to files
+// Create a write stream to append (flags: 'a') to a file
+args['log']
+args['debug']
+args['port']
 
-if (args.log == 'false') {
-    console.log("NOTICE: not creating file access.log")
-} 
-else {
-    const accessLog = fs.createWriteStream('access.log', { flags: 'a' })
-    app.use(morgan('combined', { stream: accessLog }))
+const log = args.log || 'true';
+
+if (log == true) {
+	const WRITESTREAM = fs.createWriteStream('FILE', { flags: 'a' })
+	// Set up the access logging middleware
+	app.use(morgan('FORMAT', { stream: WRITESTREAM }))
+}else {
+	console.log("ErrorErrorError");
 }
 
 app.use((req, res, next) => {
-    let logdata = {
-        remoteaddr: req.ip,
-        remoteuser: req.user,
-        time: Date.now(),
-        method: req.method,
-        url: req.url,
-        protocol: req.protocol,
-        httpversion: req.httpVersion,
-        status: res.statusCode,
-        referrer: req.headers['referer'],
-        useragent: req.headers['user-agent']
-    };
-    console.log(logdata)
-    const stmt = db.prepare('INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referrer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
-    const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.status, logdata.referrer, logdata.useragent)
-    //console.log(info)
-    next();
+	// Your middleware goes here.
+	let logdata = {
+	  remoteaddr: req.ip,
+	  remoteuser: req.user,
+	  time: Date.now(),
+	  method: req.method,
+	  url: req.url,
+	  protocol: req.protocol,
+	  httpversion: req.httpVersion,
+	  status: res.statusCode,
+	  referrer: req.headers['referer'],
+	  useragent: req.headers['user-agent']
+  };
+  console.log(logdata)
+  const stmt = db.prepare('INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referrer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
+  const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.status, logdata.referrer, logdata.useragent)
+  //console.log(info)
+  next();
 })
 
+if (args.debug || args.d) {
+  app.get('/app/log/access/', (req, res, next) => {
+	  const stmt = db.prepare("SELECT * FROM accesslog").all();
+	  res.status(200).json(stmt);
+  })
 
 // Previous API Construction from last assignment
-
-app.get('/app/', (req, res) => {
-	// Respond with status 200
-	res.statusCode = 200;
-	// Respond with status message "OK"
-	res.statusMessage = 'OK';
-	//res.send('Hello World')
-	// res.writeHead( res.statusCode, { 'Content-Type' : 'text/plain' });
-	// res.end(res.statusCode+ ' ' +res.statusMessage);
-})
-
-
-app.get('/app/flips/:number', (req, res) => {
-	var flips = coinFlips(req.params.number);
-	var stats = countFlips(flips);
-	res.json({"raw" : flips, "summary" : stats});
-});
-
-app.use(function(req, res){
-	res.status(404).send('404 NOT FOUND');
-	res.type("text/plain")
-});
 
 app.get('/app/flip/', (req, res) => {
     const flip = coinFlip()
