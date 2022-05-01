@@ -64,23 +64,7 @@ app.use((req, res, next) => {
     //console.log(info)
     next();
 })
-
-// Default API endpoint that returns 404 Not found for any endpoints that are not defined.
-app.use(function(req, res){
-    const statusCode = 404
-    const statusMessage = 'NOT FOUND'
-    res.status(statusCode).end(statusCode+ ' ' +statusMessage)
-});
-
-// Tell STDOUT that the server is stopped
-process.on('SIGINT', () => {
-    server.close(() => {
-		console.log('\nApp stopped.');
-	});
-});
-
 // Previous API Construction from last assignment
-
 app.get('/app/', (req, res) => {
 	// Respond with status 200
 	res.statusCode = 200;
@@ -169,3 +153,15 @@ if (args.debug || args.d) {
         throw new Error('Error test works.')
     })
 }
+
+app.use(function(req, res){
+    const statusCode = 404
+    const statusMessage = 'NOT FOUND'
+    res.status(statusCode).end(statusCode+ ' ' +statusMessage)
+});
+
+process.on('SIGINT', () => {
+    server.close(() => {
+		console.log('\nApp stopped.');
+	});
+});
