@@ -69,11 +69,11 @@ app.use((req, res, next) => {
     	useragent: req.headers['user-agent']
   	}
   	const stmt = db.prepare(`INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url,  protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-  	const info = stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.secure, logdata.status, logdata.referer, logdata.useragent);
+  	stmt.run(logdata.remoteaddr, logdata.remoteuser, logdata.time, logdata.method, logdata.url, logdata.protocol, logdata.httpversion, logdata.secure, logdata.status, logdata.referer, logdata.useragent);
   	next();
 })
 
-if (debug == true) {
+if (debug == false) {
   	app.get('/app/log/access', (req, res) => {
     	// userinfo or accesslog?
     	const stmt = db.prepare('SELECT * FROM userinfo').all()
