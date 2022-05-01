@@ -30,10 +30,10 @@ const db = require('./database.js')
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-const HTTP_PORT = args.port || args.p || 5000
+const port = args.port || args.p || 5000
 
-const server = app.listen(HTTP_PORT, () => {
-    console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
+const server = app.listen(port, () => {
+    console.log("Server running on port %PORT%".replace("%PORT%",port))
 });
 // If --log=false then do not create a log file
 if (args.log == 'false') {
