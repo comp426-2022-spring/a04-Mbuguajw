@@ -27,3 +27,5 @@ if (row === undefined) {
 } else {
     console.log('Log database exists.')
 }
+
+module.exports = db

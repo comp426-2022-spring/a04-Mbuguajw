@@ -61,7 +61,6 @@ app.use((req, res, next) => {
     next();
 })
 
-
 // Previous API Construction from last assignment
 
 app.get('/app/flip/', (req, res) => {
