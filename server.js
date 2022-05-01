@@ -76,10 +76,6 @@ app.get('/app/', (req, res) => {
 	// res.end(res.statusCode+ ' ' +res.statusMessage);
 })
 
-app.get('/app/flip/', (req, res) => {
-	var flip = coinFlip();
-	res.json({ "flip" : flip})
-});
 
 app.get('/app/flips/:number', (req, res) => {
 	var flips = coinFlips(req.params.number);
@@ -87,20 +83,37 @@ app.get('/app/flips/:number', (req, res) => {
 	res.json({"raw" : flips, "summary" : stats});
 });
 
-app.get('/app/flip/call/heads', (req, res) => {
-	const head = flipACoin('heads');
-	res.json(head);
-});
-
-app.get('/app/flip/call/tails', (req, res) => {
-	const tail = flipACoin('tails');
-	res.json(tail);
-});
-
 app.use(function(req, res){
 	res.status(404).send('404 NOT FOUND');
 	res.type("text/plain")
 });
+
+app.get('/app/flip/', (req, res) => {
+    const flip = coinFlip()
+    res.status(200).json({ "flip" : flip })
+});
+
+app.post('/app/flip/coins/', (req, res, next) => {
+    const flips = coinFlips(req.body.number)
+    const count = countFlips(flips)
+    res.status(200).json({"raw":flips,"summary":count})
+})
+
+app.get('/app/flips/:number', (req, res, next) => {
+    const flips = coinFlips(req.params.number)
+    const count = countFlips(flips)
+    res.status(200).json({"raw":flips,"summary":count})
+});
+
+app.post('/app/flip/call/', (req, res, next) => {
+    const game = flipACoin(req.body.guess)
+    res.status(200).json(game)
+})
+
+app.get('/app/flip/call/:guess(heads|tails)/', (req, res, next) => {
+    const game = flipACoin(req.params.guess)
+    res.status(200).json(game)
+})
 
 function coinFlip() {
 	var num = Math.floor(Math.random()*100);
