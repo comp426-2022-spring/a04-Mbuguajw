@@ -1,39 +1,26 @@
-// Connect to a database or create one if it doesn't exist yet.
-const database = require('better-sqlite3');
-const db = new database('log.db');
-// Is the database initialized or do we need to initialize it?
-
-const stmt = db.prepare(`
-    SELECT name FROM sqlite_master WHERE type='table' and name='userinfo';`
-);
-// Define row using `get()` from better-sqlite3
+const Database = require('better-sqlite3')
+const db = new Database('log.db')
+const stmt = db.prepare(`SELECT name FROM sqlite_master WHERE type='table' and name='accesslog';`)
 let row = stmt.get();
-// Check if there is a table. If row is undefined then no table exists.
 if (row === undefined) {
-// Echo information about what you are doing to the console.
-    console.log('Log database appears to be empty. Creating log database...');
-// Set a const that will contain your SQL commands to initialize the database.
+    console.log('Log database appears to be empty. Creating log database...')
     const sqlInit = `
-    CREATE TABLE accesslog ( 
-        id INTEGER PRIMARY KEY, 
-        remoteaddr TEXT, 
-        remoteuser TEXT, 
-        time TEXT, 
-        method TEXT, 
-        url TEXT, 
-        protocol TEXT, 
-        httpversion TEXT, 
-        status TEXT, 
-        referer TEXT, 
-        useragent TEXT
+        CREATE TABLE accesslog ( 
+            id INTEGER PRIMARY KEY, 
+            remoteaddr TEXT,
+            remoteuser TEXT,
+            time TEXT,
+            method TEXT,
+            url TEXT,
+            protocol TEXT,
+            httpversion TEXT,
+            status TEXT, 
+            referrer TEXT,
+            useragent TEXT
         );
     `
-// Execute SQL commands that we just wrote above.
-    db.exec(sqlInit);
-// Echo information about what we just did to the console.
-} else {
-// Since the database already exists, echo that to the console.
+    db.exec(sqlInit)
+} 
+else {
     console.log('Log database exists.')
 }
-// Export all of the above as a module so that we can use it elsewhere.
-module.exports = db
