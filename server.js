@@ -21,7 +21,6 @@ if (args.help || args.h) {
     console.log(help)
     process.exit(0)
 }
-// Define app using express
 var express = require("express")
 var app = express()
 const fs = require('fs')
@@ -35,16 +34,15 @@ const port = args.port || args.p || 5000
 const server = app.listen(port, () => {
     console.log("Server running on port %PORT%".replace("%PORT%",port))
 });
-// If --log=false then do not create a log file
+
 if (args.log == 'false') {
-    console.log("ERRORERRORERROR")
-} else {
-// Use morgan for logging to files
-// Create a write stream to append to an access.log file
+    console.log("NOTICE: not creating file access.log")
+} 
+else {
     const accessLog = fs.createWriteStream('access.log', { flags: 'a' })
     app.use(morgan('combined', { stream: accessLog }))
 }
-// log to database
+
 app.use((req, res, next) => {
     let logdata = {
         remoteaddr: req.ip,
@@ -64,7 +62,10 @@ app.use((req, res, next) => {
     //console.log(info)
     next();
 })
+
+
 // Previous API Construction from last assignment
+
 app.get('/app/', (req, res) => {
 	// Respond with status 200
 	res.statusCode = 200;
