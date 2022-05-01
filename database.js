@@ -1,6 +1,5 @@
 //const { debug } = require('console');
 // Connect to a database or create one if it doesn't exist yet.
-// const db = require("./database.js");
 "use strict";
 const Database = require('better-sqlite3');
 const db = new Database('log.db');
