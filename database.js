@@ -3,7 +3,6 @@
 "use strict";
 const Database = require('better-sqlite3');
 const db = new Database('log.db');
-
 // Is the database initialized or do we need to initialize it?
 
 const stmt = db.prepare(`
@@ -28,8 +27,9 @@ if (row === undefined) {
         httpversion TEXT, 
         status TEXT, 
         referer TEXT, 
-        useragent TEXT );
-    `;
+        useragent TEXT
+        );
+    `
 // Execute SQL commands that we just wrote above.
     db.exec(sqlInit);
 // Echo information about what we just did to the console.
